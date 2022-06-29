@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: s3-browser
+  name: s3-browser
+  namespace: opsfleet
+spec:
+  serviceAccountName: test-service-account
+  containers:
+  - name: s3-browser
+    image: wettyoss/wetty
+    name: s3-browser
+    ports:
+      - containerPort: 3000
+  restartPolicy: Always
