@@ -181,3 +181,20 @@ resource "aws_s3_object" "testfiles" {
   source = "testfiles/${each.value}"
   etag = filemd5("testfiles/${each.value}")
 }
+
+output "role_id" {
+  description = "Role for kuberneries service account"
+  value       = aws_iam_role.eks_service_account_role.arn
+}
+
+output "cluster_name" {
+  description = "Name of a EKS cluster"
+  value       = aws_eks_cluster.opsfleet-test-eks.name
+}
+
+data "aws_region" "current" {}
+
+output "region_name" {
+  description = "Current AWS region"
+  value       = data.aws_region.current.name
+}

@@ -9,8 +9,8 @@ spec:
   serviceAccountName: test-service-account
   containers:
   - name: s3-browser
-    image: wettyoss/wetty
+    image: amazon/aws-cli
+    command: [ "/bin/bash", "-c", "--" ]
+    args: [ "while true; do sleep 30; done;" ]
     name: s3-browser
-    ports:
-      - containerPort: 3000
   restartPolicy: Always
