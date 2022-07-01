@@ -32,3 +32,12 @@ After that, it will try to list objects in *opsfleet-test-bucket* itself, and yo
 6. Connect your kubectl wuth EKS cluster with *aws eks update-kubeconfig --region YOUR_REGION --name CLUSTER_NAME* command, correct values can be also found in the outputs
 7. To create kubernetes recources you can use *kubectl apply -f FILENAME* command
 8. You can execute commands on newly created pods using *kubectl -n opsfleet exec --stdin --tty POD_NAME -- COMMAND*
+
+
+# Research task
+
+## Managing secrest on Kubernetes
+
+Storing secrets in config files or application code can cause a lot of issues. Probably the easiest, and the most straightforward way to solve this, will be using [Kubernetes Secrets](https://kubernetes.io/docs/concepts/configuration/secret). They can be [created](https://kubernetes.io/docs/tasks/configmap-secret/managing-secret-using-kubectl/) in the cluster and used by any pod. You can have that passed to the pod as [environment variable](https://kubernetes.io/docs/concepts/configuration/secret/#using-secrets-as-environment-variables), so nothing will be changed form an application perspective. 
+
+If you don't want to manage secrets manually, AWS Secrets manager can be utilized here. This will allow you to have things like automatic rotation of passwords for supported databases or custom secrets with AWS Lambda. Also, those secrets can be easily shared with other AWS services like EC2, Lambda or Step Functions, maybe even on-premises resources with API keys. Secrets manager connects with Kubernetes using [AWS Secrets and Configuration Provider Application (ASCP)](https://docs.aws.amazon.com/secretsmanager/latest/userguide/integrating_csi_driver_tutorial.html). And again, this solution wouldn't affect application logic while making overall setup much more secure and flexible. Though in this case it is possible to retrieve secrets directly from an aplication itself, it will enable dynamic password changes without redeployments.
