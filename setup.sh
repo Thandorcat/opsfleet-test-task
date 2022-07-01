@@ -28,6 +28,9 @@ kubectl create ns opsfleet
 kubectl apply -f account.yaml
 kubectl apply -f pod.yaml
 
+echo "Waiting a bit for container to get up..."
+sleep 15
+
 echo "Trying to get access to S3 from deployed pod (access should be denied):"
 kubectl -n opsfleet exec --stdin --tty s3-browser -- aws s3 ls
 

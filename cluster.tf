@@ -45,7 +45,7 @@ resource "aws_iam_role_policy_attachment" "AmazonEC2ContainerRegistryReadOnly-EK
  role = aws_iam_role.eks-iam-role.name
 }
 
-resource "aws_eks_cluster" "opsfleet-test-eks" {
+resource "aws_eks_cluster" "opsfleet_test_eks" {
  name = "opsfleet-test-cluster"
  role_arn = aws_iam_role.eks-iam-role.arn
 
@@ -58,14 +58,14 @@ resource "aws_eks_cluster" "opsfleet-test-eks" {
  ]
 }
 
-data "tls_certificate" "tls-cert" {
-  url = aws_eks_cluster.opsfleet-test-eks.identity[0].oidc[0].issuer
+data "tls_certificate" "tls_cert" {
+  url = aws_eks_cluster.opsfleet_test_eks.identity[0].oidc[0].issuer
 }
 
 resource "aws_iam_openid_connect_provider" "eks_iden_provider" {
   client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = [data.tls_certificate.tls-cert.certificates[0].sha1_fingerprint]
-  url             = aws_eks_cluster.opsfleet-test-eks.identity[0].oidc[0].issuer
+  thumbprint_list = [data.tls_certificate.tls_cert.certificates[0].sha1_fingerprint]
+  url             = aws_eks_cluster.opsfleet_test_eks.identity[0].oidc[0].issuer
 }
 
 data "aws_iam_policy_document" "eks_iden_assume" {
@@ -102,8 +102,8 @@ resource "aws_iam_policy" "test_bucket_access" {
         Action   = "s3:*"
         Effect   = "Allow"
         Resource = [
-      aws_s3_bucket.test-bucket.arn,
-      "${aws_s3_bucket.test-bucket.arn}/*",
+      aws_s3_bucket.test_bucket.arn,
+      "${aws_s3_bucket.test_bucket.arn}/*",
     ]
       },
     ]
@@ -150,8 +150,8 @@ resource "aws_iam_role_policy_attachment" "AmazonEC2ContainerRegistryReadOnly" {
   role    = aws_iam_role.workernodes.name
 }
 
-resource "aws_eks_node_group" "worker-node-group" {
-  cluster_name  = aws_eks_cluster.opsfleet-test-eks.name
+resource "aws_eks_node_group" "worker_node_group" {
+  cluster_name  = aws_eks_cluster.opsfleet_test_eks.name
   node_group_name = "opsfleet-test-workernodes"
   node_role_arn  = aws_iam_role.workernodes.arn
   subnet_ids   = data.aws_subnets.existing_subnets.ids
@@ -170,13 +170,13 @@ resource "aws_eks_node_group" "worker-node-group" {
   ]
 }
 
-resource "aws_s3_bucket" "test-bucket" {
+resource "aws_s3_bucket" "test_bucket" {
   bucket = "opsfleet-test-bucket"
 }
 
 resource "aws_s3_object" "testfiles" {
   for_each = fileset("testfiles/", "*")
-  bucket = aws_s3_bucket.test-bucket.id
+  bucket = aws_s3_bucket.test_bucket.id
   key = each.value
   source = "testfiles/${each.value}"
   etag = filemd5("testfiles/${each.value}")
@@ -189,7 +189,7 @@ output "role_id" {
 
 output "cluster_name" {
   description = "Name of a EKS cluster"
-  value       = aws_eks_cluster.opsfleet-test-eks.name
+  value       = aws_eks_cluster.opsfleet_test_eks.name
 }
 
 data "aws_region" "current" {}
